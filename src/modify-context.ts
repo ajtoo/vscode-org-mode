@@ -1,7 +1,8 @@
 import * as vscode from 'vscode';
-import getCursorContext, { DATE, TODO } from './cursor-context';
+import getCursorContext, { DATE, TODO, CHECKBOX } from './cursor-context';
 import * as Datetime from './simple-datetime';
 import nextTodo from './todo-switch';
+import nextCheckbox from './checkbox-switch';
 
 export const UP = "UP";
 export const DOWN = "DOWN";
@@ -31,6 +32,10 @@ function modifyContext(textEditor: vscode.TextEditor, edit: vscode.TextEditorEdi
             }
             edit.replace(ctx.range, newTodoString);
             break;
+        case CHECKBOX:
+            const newCheckboxString = nextCheckbox(ctx.data, action)
+            edit.replace(ctx.range, newCheckboxString)
+
     }
 }
 

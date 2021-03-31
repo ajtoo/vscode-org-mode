@@ -1,4 +1,4 @@
-// import * as vscode from 'vscode';
+import * as vscode from 'vscode';
 import {
     Position,
     Range,
@@ -12,6 +12,7 @@ import * as Util from './utils';
 // Any potential data labels should go here
 export const DATE = "DATE";
 export const TODO = "TODO";
+export const CHECKBOX = "CHECKBOX";
 
 interface IContextData {
     dataLabel: string,
@@ -44,6 +45,15 @@ export default function getCursorContext(textEditor: TextEditor, edit: TextEdito
     if (match) {
         // We've found our match
         return getTodoContext(match, cursorPos);
+    }
+
+    // Match for checkboxes (or absence)
+    // const todoWords = "TODO|DONE";
+    const checkboxHeaderRegexp = /^(\s*-\s+)(\[.\])/g;
+    match = checkboxHeaderRegexp.exec(curLine);
+    if (match) {
+        // We've found our match
+        return getCheckboxContext(match, cursorPos);
     }
 
     return undefined;
@@ -83,6 +93,26 @@ function getTodoContext(match: RegExpExecArray, cursorPos: Position): IContextDa
     return {
         data: todoWord,
         dataLabel: TODO,
+        line,
+        range
+    }
+}
+
+function getCheckboxContext(match: RegExpExecArray, cursorPos: Position): IContextData {
+    const line = cursorPos.line;
+
+    const prefix = match[1];
+    const checkbox = match[2];
+
+    const start = match.index + match[1].length;
+    const startPos = new Position(line, start);
+    const end = start + checkbox.length;
+    const endPos = new Position(line, end);
+    const range = new Range(startPos, endPos);
+
+    return {
+        data: checkbox,
+        dataLabel: CHECKBOX,
         line,
         range
     }
