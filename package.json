@@ -266,7 +266,7 @@
     "devDependencies": {
         "@types/mocha": "^2.2.48",
         "@types/node": "^6.14.3",
-        "codecov": "^3.1.0",
+        "codecov": "^3.7.1",
         "mocha": "^6.0.1",
         "tslint": "^5.14.0",
         "tslint-config-prettier": "^1.18.0",
